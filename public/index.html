@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<title>Stock Watcher</title>
+		<meta name="viewport" content="width=device-width">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<link href="/public/css/main.css" rel="stylesheet" type="text/css">
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	    <script src="https://code.highcharts.com/stock/highstock.js"></script>
+        <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+        <script type="text/javascript" src="common/vendor/theme.js"></script>
+	</head>
+	<!--<nav class="navbar navbar-inverse">-->
+	<!--  <div>-->
+	<!--    <div class="navbar-header">-->
+	    	
+	<!--      	<span class="out-tonight-text" href="#">Out Tonight</span>-->
+	<!--      	<img src="/public/img/glass-lg.png" style="width:80px;display:inline"/>-->
+	<!--    </div>-->
+	<!--    <div class="twitter-login navbar-right">-->
+	<!--    		@<span id="profile-username">Guest</span>-->
+	<!--    		<a id="log-toggle" href="/auth/twitter">-->
+	<!--				<div class="btn" id="login-btn">-->
+	<!--					<img class="twitter-logo" src="/public/img/icon-twitter-circular.png" alt="twitter logo" />-->
+	<!--					<span id="log-btn-toggle">Login</span>-->
+	<!--				</div>-->
+	<!--			</a>-->
+				
+	<!--	</div>-->
+	<!--  </div>-->
+	<!--</nav>-->
+
+	<body>
+	    <div class="container" ng-app="stockWatcher" ng-controller="stockController">
+    		<div id="chart"></div>
+    		<div class="panel col-md-12 col-sm-12">
+    		    <div class="stock-block-container">
+    		    	<div class="col-md-4 col-sm-6" ng-repeat="stock in myStocks">
+    		            <div class="stock-block">
+    		                <i class="material-icons remove" data-name="' + code + '" ng-click="deleteStock($index)">delete_sweep</i>
+    		                <h3>{{stock.code}}</h3>
+    		                <p>{{stock.name}}</p>
+    		                <p class="updated-time">
+    		                	<span>Last Updated : </span>{{stock.updated}}
+    		                	<i class="material-icons update" ng-click="updateStock($index)">cached</i>
+    		                </p>
+    		                
+    		            </div>
+    		        </div>
+    		    </div>
+    		</div>
+		    <div class="stock-input input-group col-md-12 col-sm-12">
+		        <input class="form-control" id="stock-id" ng-model="newStock">
+		        <span class="input-group-btn">
+		            <button class="btn btn-success" id="add" ng-click="addStock()">Add</button>
+		        </span>
+		    </div>
+		</div>
+		
+		<!--<footer class="footer navbar-fixed-bottom">-->
+		<!--      <div class="container">-->
+		<!--        <p class="footer-text">By -->
+		<!--        <span id="author-name"><a target="_blank" href="https://www.linkedin.com/in/qing-zhou-7a27081a">Qing Zhou</a></span> | -->
+		<!--        <span id="author-github"><a target="_blank" href="https://github.com/qzhou1607">Github</a></span> | -->
+		<!--        <span id="author-codepen"><a target="_blank" href="http://codepen.io/claire514/">CodePen</a></span> </p>-->
+		<!--        <p class="footer-text">Powered By Yelp<img id = "yelp-logo" src="/public/img/yelp.png"></p>-->
+		<!--      </div>-->
+	 <!--   </footer>-->
+        <!--<script type="text/javascript" src="/js/themes/gray.js"></script>-->
+        <!-- Libraries -->
+    	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+    	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-route.min.js"></script>
+    	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-resource.min.js"></script>
+        
+		<script type="text/javascript" src="common/ajax-functions.js"></script>
+		<script type="text/javascript" src="controllers/clickController.client.js"></script>
+		<script type="text/javascript" src="controllers/userController.client.js"></script>
+		
+		<script>
+			//helper functions
+			function processJSON(json) {
+				var rawData = JSON.parse(json).dataset;
+	            var code = rawData.dataset_code;
+	            var name = rawData.name;
+	            var updateTime = rawData.refreshed_at;
+	            var rawStockData = rawData.data;
+	            var stockData = rawStockData.map(function(d) {
+	                return [new Date(d[0]).getTime(),d[1]];
+	            }).reverse();
+	            
+	            return {
+	            	code:code,
+	            	name:name,
+	            	updated:new Date(updateTime).toDateString(),
+	            	stockData:stockData
+	            }
+			}
+			
+			//add stock to chart
+			function drawStock(code,data) {
+				chart.addSeries({
+						name:code,
+						data:data
+				});
+			}
+			
+			//remove stock from chart
+			function removeStock(code) {
+				chart.series.forEach(function(e) {
+					if(e.name === code) {
+						e.remove();
+					}
+				});
+			}
+			
+			var app = angular.module('stockWatcher',[]);
+			app.controller('stockController',['$scope','$http',function($scope, $http) {
+				//load stock data from database
+				$http.get('/api/stocks')
+				.then(function(response) {
+					$scope.myStocks = response.data.map(function(e) {
+						return processJSON(e['json']);
+					});
+					
+					//add stocks to chart
+					$scope.myStocks.forEach(function(e) {
+						console.log(e['code']);
+						drawStock(e['code'],e['stockData']);
+					});
+					console.log($scope.myStocks);
+				});
+				
+				$scope.addStock = function() {
+					$http.post('/api/stocks/' + $scope.newStock)
+					.then(function(response) {
+						var newStockData = processJSON(response.data.json);
+						$scope.myStocks.push(newStockData); //update $scope
+						drawStock(newStockData['code'],newStockData['stockData']); //update chart
+						$scope.newStock = '';
+					});
+				};
+				
+				$scope.deleteStock = function(index) {
+						var stockId = $scope.myStocks[index]['code'];
+						$http.delete('/api/stocks/' + stockId)
+						.then(function(response) {
+							//console.log(response);
+							$scope.myStocks.splice(index,1); //update $scope
+							removeStock(stockId);//update chart
+						});
+				}
+				
+				$scope.updateStock = function(index) {
+					var stockId = $scope.myStocks[index]['code'];
+					$http.put('/api/stocks/' + stockId)
+					.then(function(response) {
+						console.log(response);
+						//delete old record
+						$scope.myStocks.splice(index,1); 
+						removeStock(stockId);
+						//add new record
+						var newStockData = processJSON(response.data.json);
+						$scope.myStocks.push(newStockData); 
+						drawStock(newStockData['code'],newStockData['stockData']); 
+						$scope.newStock = '';
+					});
+				}
+				
+			}]);
+			
+			
+		</script>
+	</body>
+	
+
+</html>

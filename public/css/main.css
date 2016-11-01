@@ -1,0 +1,52 @@
+body {
+    background-color:#333;
+}
+.container {
+    margin-top:40px;
+}
+.panel {
+    background-color: #333;
+    margin-top:20px;
+    margin-bottom:20px;
+}
+
+.stock-block {
+    border: 1px solid #bbb;
+    height: 160px;
+    border-left-width: 5px;
+    background-color: #fff;
+    margin-top:20px;
+    padding:15px;
+}
+.stock-input {
+    margin-top:20px;
+    margin-left:30px;
+    width:25%;
+}
+#stock-id {
+    display: inline;
+}
+
+h3 {
+    margin-top:3px;
+}
+.material-icons {
+    float:right;
+}
+.material-icons:hover {
+    opacity:0.8;
+    cursor:pointer;
+}
+.updated-time {
+    position:absolute;
+    bottom:0;
+    color:#ccc;
+}
+.material-icons.update {
+    margin-top:-2px;
+    margin-left:45px;
+    color:#000;
+}
+.material-icons.update:hover {
+    opacity: 0.8
+}
