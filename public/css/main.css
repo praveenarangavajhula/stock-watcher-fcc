@@ -1,5 +1,8 @@
+@import url('https://fonts.googleapis.com/css?family=Oswald');
+
 body {
     background-color:#333;
+    font-family: 'Oswald', sans-serif;
 }
 
 .container {
@@ -64,4 +67,9 @@ h3 {
 }
 .warning {
     color:rgb(196,92,87);
+}
+
+.footer {
+    color:white;
+    text-align: center;
 }
