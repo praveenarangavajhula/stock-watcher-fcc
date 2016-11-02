@@ -1,13 +1,15 @@
 body {
     background-color:#333;
 }
+
 .container {
-    margin-top:40px;
+    margin-top:30px;
 }
+
 .panel {
-    background-color: #333;
     margin-top:20px;
     margin-bottom:20px;
+    background-color:#333;
 }
 
 .stock-block {
@@ -43,10 +45,23 @@ h3 {
     color:#ccc;
 }
 .material-icons.update {
-    margin-top:-2px;
-    margin-left:45px;
+    position: absolute;
+    bottom: 11px;
+    right: 35px;
     color:#000;
 }
 .material-icons.update:hover {
     opacity: 0.8
+}
+
+#search-bar {
+    background-color:#333;
+    padding:0;
+}
+
+.md-raised {
+    max-height: 45px;
+}
+.warning {
+    color:rgb(196,92,87);
 }

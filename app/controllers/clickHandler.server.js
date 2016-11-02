@@ -11,6 +11,9 @@ function ClickHandler () {
         var url = 'https://www.quandl.com/api/v3/datasets/WIKI/' + stockId + '.json?api_key=' + process.env.QUANDL_KEY +'&start_date=2015-01-01';
         //load stock data from Quandl
         request(url, function (error, response, body) {
+          if (response.statusCode == 404) {
+              res.json({'error':'Wrong Code'});
+          }
           if (!error && response.statusCode == 200) {
             var rawData = JSON.parse(body).dataset;
             var code = rawData.dataset_code;
@@ -74,19 +77,6 @@ function ClickHandler () {
           }
         });
 	}
-
-// 	this.addClick = function (req, res) {
-// 		Users
-// 			.findOneAndUpdate({ 'twitter.id': req.user.twitter.id }, {$push :{ bars:req.query.yelpID }})
-// 			.exec(function (err, result) {
-// 					if (err) { throw err; }
-// 					res.json(result);
-// 				}
-// 			);
-// 	};
-
-
-
 }
 
 module.exports = ClickHandler;
