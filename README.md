@@ -3,7 +3,7 @@
 ## Overview
 
 This application allows users to enter stock code which will then display a graph of that stocks price over time.You can view this app in production here: https://watch-your-stock.herokuapp.com/. 
-The features of this app includes:
+Financial data for this app is from ```Quandl API```, and ```Highcharts``` is used for generating the interactive stock chart. The features of this app includes:
 ```
 1. As a user, I can view a graph displaying the recent trend lines for each added stock.
 2. As a user, I can add new stocks by their symbol name.
@@ -14,10 +14,11 @@ The features of this app includes:
 ```
 NPM
 Node.js
-Express
+Express.js
 Mongoose
 Angular.js
 Angular Material
+Socket.io
 Dotenv
 Git
 ```

@@ -49,9 +49,7 @@ function removeStock(code) {
 	});
 }
 
-//angular module
-var app = angular.module('stockWatcher',['ngMaterial','ngMessages', 'material.svgAssetsCache']);
-
+//Angular Material Config
 app.config(function($mdThemingProvider) {
   $mdThemingProvider.theme('altTheme')
        .primaryPalette('grey',{
@@ -68,8 +66,32 @@ app.config(function($mdThemingProvider) {
 })
 
 //controller for stock data
-app.controller('stockController',['$scope','$http',function($scope, $http) {
-	//load stock data from database
+app.controller('stockController',['$scope','$http','socket',function($scope, $http,socket) {
+	
+	//socket to update all users' chart and $scope
+	socket.on('send stock', function (newStockData) {
+		console.log(newStockData);
+    	$scope.myStocks.push(newStockData);//update $scope
+    	drawStock(newStockData['code'],newStockData['stockData']);//update chart
+    });
+    
+    socket.on('delete stock', function (data) {
+		console.log(data);
+    	$scope.myStocks.splice(data.index,1); //update $scope
+		removeStock(data.stockId);//update chart
+    });
+    
+    socket.on('update stock', function (data) {
+		console.log(data);
+    	//delete old record
+		$scope.myStocks.splice(data.index,1); 
+		removeStock(data.stockId);
+		//add new record	
+		$scope.myStocks.push(data.newStockData); 
+		drawStock(data.newStockData['code'],data.newStockData['stockData']); 
+    });
+				
+	//load stock data from database when first load the page
 	$http.get('/api/stocks')
 	.then(function(response) {
 		$scope.myStocks = response.data.map(function(e) {
@@ -84,6 +106,7 @@ app.controller('stockController',['$scope','$http',function($scope, $http) {
 		console.log($scope.myStocks);
 	});
 	
+	//functions defined for this $scope
 	$scope.addStock = function() {
 		$http.post('/api/stocks/' + $scope.newStock)
 		.then(function(response) {
@@ -91,8 +114,8 @@ app.controller('stockController',['$scope','$http',function($scope, $http) {
 				$scope.error = response.data.error;
 			} else {
 				var newStockData = processJSON(response.data.json);
-				$scope.myStocks.push(newStockData); //update $scope
-				drawStock(newStockData['code'],newStockData['stockData']); //update chart
+				console.log(newStockData);
+				socket.emit('stock added',newStockData); //emit add stock event to server;
 				$scope.newStock = '';
 			}
 		});
@@ -103,8 +126,10 @@ app.controller('stockController',['$scope','$http',function($scope, $http) {
 			$http.delete('/api/stocks/' + stockId)
 			.then(function(response) {
 				//console.log(response);
-				$scope.myStocks.splice(index,1); //update $scope
-				removeStock(stockId);//update chart
+				socket.emit('stock deleted',{
+					index:index,
+					stockId:stockId
+				}); //emit delete stock event to server;
 			});
 	}
 	
@@ -113,13 +138,13 @@ app.controller('stockController',['$scope','$http',function($scope, $http) {
 		$http.put('/api/stocks/' + stockId)
 		.then(function(response) {
 			console.log(response);
-			//delete old record
-			$scope.myStocks.splice(index,1); 
-			removeStock(stockId);
-			//add new record
 			var newStockData = processJSON(response.data.json);
-			$scope.myStocks.push(newStockData); 
-			drawStock(newStockData['code'],newStockData['stockData']); 
+			socket.emit('stock updated',{
+					index:index,
+					stockId:stockId,
+					newStockData:newStockData
+				}); //emit delete stock event to server;
+			
 			$scope.newStock = '';
 		});
 	}

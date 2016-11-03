@@ -50,7 +50,6 @@
 	    		                <p>{{stock.name}}</p>
 	    		                <p class="updated-time">
 	    		                	<span>Last Updated : </span>{{stock.updated}}
-	    		                	
 	    		                </p>
 	    		                <i class="material-icons update" ng-click="updateStock($index)">cached</i>
 	    		            </div>
@@ -69,13 +68,15 @@
 		        <p class="footer-text">Powered By Quandl</p>
 		      </div>
 	    </footer>
-        <!--<script type="text/javascript" src="/js/themes/gray.js"></script>-->
+	    <!--web socket-->
+        <script src="/socket.io/socket.io.js"></script>
         <!-- Libraries -->
     	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-route.min.js"></script>
     	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-resource.min.js"></script>
-        
-		<script type="text/javascript" src="common/ajax-functions.js"></script>
+        <!--Factories and Controllers-->
+		<script type="text/javascript" src="services/socketFactory.js"></script>
 		<script type="text/javascript" src="controllers/userController.client.js"></script>
+	
 		
 		
 	</body>
