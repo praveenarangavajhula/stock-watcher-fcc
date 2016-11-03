@@ -1,22 +1,39 @@
+# Out Tonight
 
-     ,-----.,--.                  ,--. ,---.   ,--.,------.  ,------.
-    '  .--./|  | ,---. ,--.,--. ,-|  || o   \  |  ||  .-.  \ |  .---'
-    |  |    |  || .-. ||  ||  |' .-. |`..'  |  |  ||  |  \  :|  `--, 
-    '  '--'\|  |' '-' ''  ''  '\ `-' | .'  /   |  ||  '--'  /|  `---.
-     `-----'`--' `---'  `----'  `---'  `--'    `--'`-------' `------'
-    ----------------------------------------------------------------- 
+## Overview
+
+This application allows users to enter stock code which will then display a graph of that stocks price over time.You can view this app in production here: https://watch-your-stock.herokuapp.com/. 
+The features of this app includes:
+```
+1. As a user, I can view a graph displaying the recent trend lines for each added stock.
+2. As a user, I can add new stocks by their symbol name.
+3. As a user, I can remove stocks.
+4. As a user, I can see changes in real-time when any other user adds or removes a stock. 
+```
+## Prerequisites
+```
+NPM
+Node.js
+Express
+Mongoose
+Angular.js
+Angular Material
+Dotenv
+Git
+```
+
+## Setup Local Environment Variables
+
+Create a file with the name of '.env' in the root directory. And list the following local environment variables:
+```
+QUANDL_KEY=your-quandl-key-here
+MONGODB_URI=mongodb://localhost:27017/out-tonight
+```
+
+## Start the App
+
+`cd` to the project directory and run `node server.js` in the terminal.
 
 
-Welcome to your Node.js project on Cloud9 IDE!
 
-This chat example showcases how to use `socket.io` with a static `express` server.
 
-## Running the server
-
-1) Open `server.js` and start the app by clicking on the "Run" button in the top menu.
-
-2) Alternatively you can launch the app from the Terminal:
-
-    $ node server.js
-
-Once the server is running, open the project in the shape of 'https://projectname-username.c9.io/'. As you enter your name, watch the Users list (on the left) update. Once you press Enter or Send, the message is shared with all connected clients.
