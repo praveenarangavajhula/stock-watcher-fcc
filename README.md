@@ -28,7 +28,7 @@ Git
 Create a file with the name of '.env' in the root directory. And list the following local environment variables:
 ```
 QUANDL_KEY=your-quandl-key-here
-MONGODB_URI=mongodb://localhost:27017/out-tonight
+MONGODB_URI=your-mongodb-url-here
 ```
 
 ## Start the App
